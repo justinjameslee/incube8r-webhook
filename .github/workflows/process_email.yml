@@ -1,0 +1,45 @@
+name: Process incube8r sales data and insert into google sheets
+
+on:
+  workflow_dispatch:  # Allows manual triggering for testing
+  repository_dispatch:  # External trigger from Make.com
+    types: [process_email]  # This event type matches Make.com's HTTP trigger payload
+
+jobs:
+  processEmailData:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install gspread google-auth google-auth-oauthlib google-auth-httplib2
+      
+      - name: Set up Google Service Account JSON
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          echo "$SERVICE_ACCOUNT_JSON" > service_account.json
+
+      - name: Run Python script to process email data
+        env:
+          SERVICE_ACCOUNT_FILE: "./service_account.json"
+
+      - name: Run Python script to process email data
+        # Define the environment variables based on Make.com payload input
+        env:
+          # INPUT_DATA: ${{ github.event.client_payload.inputData }}
+          # DATE_DATA: ${{ github.event.client_payload.dateData }}
+          INPUT_DATA: ${{ secrets.INPUT_DATA }}
+          DATE_DATA: ${{ secrets.DATE_DATA }}
+          GOOGLE_SHEET_NAME: ${{ secrets.GOOGLE_SHEET_NAME }}
+
+        run: |
+          python main.py  # Run main.py instead of script/process_email_data.py
