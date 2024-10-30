@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install gspread google-auth google-auth-oauthlib google-auth-httplib2
-      
+
       - name: Set up Google Service Account JSON
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
@@ -30,16 +30,11 @@ jobs:
 
       - name: Run Python script to process email data
         env:
-          SERVICE_ACCOUNT_FILE: "./service_account.json"
-
-      - name: Run Python script to process email data
-        # Define the environment variables based on Make.com payload input
-        env:
-          # INPUT_DATA: ${{ github.event.client_payload.inputData }}
+          # INPUT_DATA: ${{ github.event.client_payload.inputData }}          
           # DATE_DATA: ${{ github.event.client_payload.dateData }}
+          SERVICE_ACCOUNT_FILE: "./service_account.json"
           INPUT_DATA: ${{ secrets.INPUT_DATA }}
           DATE_DATA: ${{ secrets.DATE_DATA }}
           GOOGLE_SHEET_NAME: ${{ secrets.GOOGLE_SHEET_NAME }}
-
         run: |
-          python main.py  # Run main.py instead of script/process_email_data.py
+          python main.py
