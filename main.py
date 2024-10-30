@@ -50,7 +50,7 @@ output = {
     'quantities': quantities,
     'prices': prices,
     'categories': categories,
-    'date_ddmmyyyy': date_parsed.strftime('%d/%m/%Y'),
+    'date_ddmmyyyy': date_parsed,
     'month_year': date_parsed.strftime('%m/%y'),
     'time_hhmmss': date_parsed.strftime('%H:%M:%S')
 }
@@ -66,8 +66,8 @@ worksheet = spreadsheet.worksheet("Data")
 
 # Prepare data to insert into Google Sheets
 data_rows = [
-    [product_names[i], categories[i], quantities[i], prices[i], output['date_ddmmyyyy'], output['month_year']]
-    for i in range(len(product_names))
+    [output['product_names'][i], output['categories'][i], output['quantities'][i], output['prices'][i], output['date_ddmmyyyy'], output['month_year']]
+    for i in range(len(output['product_names']))
 ]
 
 # Find the next available row
@@ -75,6 +75,9 @@ next_row = len(worksheet.get_all_values()) + 1
 
 # Batch update to avoid single quotes in Google Sheets
 cell_range = f"A{next_row}:F{next_row + len(data_rows) - 1}"
-worksheet.update(cell_range, data_rows)
+worksheet.batch_update([{
+    "range": cell_range,
+    "values": data_rows
+}], value_input_option="USER_ENTERED")
 
 print("Data inserted into Google Sheets successfully!")
