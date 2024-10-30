@@ -61,23 +61,21 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapi
 credentials = Credentials.from_service_account_file(service_account_file, scopes=SCOPES)
 gc = gspread.authorize(credentials)
 
-# Open the Google Sheet by name
 spreadsheet = gc.open(google_sheet_name)
-worksheet = spreadsheet.sheet1  # Access the first sheet in the spreadsheet
+worksheet = spreadsheet.worksheet("Data")
 
 # Prepare data to insert into Google Sheets
-header_row = ["Product Name", "Artist Name", "Quantity", "Price", "Category", "Date"]
 data_rows = [
-    [product_names[i], artist_names[i], quantities[i], prices[i], categories[i], output['date_ddmmyyyy']]
+    [product_names[i], categories[i], quantities[i], prices[i], output['date_ddmmyyyy'], output['month_year']]
     for i in range(len(product_names))
 ]
 
-# Insert header row if the sheet is empty
-if worksheet.row_count == 0:
-    worksheet.append_row(header_row)
+# Find the next available row
+next_row = len(worksheet.get_all_values()) + 1
 
-# Insert data rows
+# Append data rows starting from the next available row
 for row in data_rows:
-    worksheet.append_row(row)
+    worksheet.insert_row(row, next_row)
+    next_row += 1
 
 print("Data inserted into Google Sheets successfully!")
