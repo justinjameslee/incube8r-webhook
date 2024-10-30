@@ -50,7 +50,7 @@ output = {
     'quantities': quantities,
     'prices': prices,
     'categories': categories,
-    'date_ddmmyyyy': date_parsed,
+    'date_ddmmyyyy': date_parsed.strftime('%d/%m/%Y'),
     'month_year': date_parsed.strftime('%m/%y'),
     'time_hhmmss': date_parsed.strftime('%H:%M:%S')
 }
