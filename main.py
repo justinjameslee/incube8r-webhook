@@ -33,8 +33,8 @@ matches = re.findall(pattern, text)
 for match in matches:
     product_name = match[0].strip()
     artist_name = match[1].strip()
-    quantity = match[2]
-    price = match[3]
+    quantity = int(match[2])
+    price = float(match[3])
     category_formula = '=IFERROR(VLOOKUP(INDIRECT("A"&ROW()), Categories!A:B, 2, FALSE), "Other")'
 
     product_names.append(product_name)
@@ -51,7 +51,7 @@ output = {
     'prices': prices,
     'categories': categories,
     'date_ddmmyyyy': date_parsed.strftime('%d/%m/%Y'),
-    'month_year': date_parsed.strftime('%m/%Y'),
+    'month_year': date_parsed.strftime('%m/%y'),
     'time_hhmmss': date_parsed.strftime('%H:%M:%S')
 }
 
@@ -73,9 +73,8 @@ data_rows = [
 # Find the next available row
 next_row = len(worksheet.get_all_values()) + 1
 
-# Append data rows starting from the next available row
-for row in data_rows:
-    worksheet.insert_row(row, next_row)
-    next_row += 1
+# Batch update to avoid single quotes in Google Sheets
+cell_range = f"A{next_row}:F{next_row + len(data_rows) - 1}"
+worksheet.update(cell_range, data_rows)
 
 print("Data inserted into Google Sheets successfully!")
