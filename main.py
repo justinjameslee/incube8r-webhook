@@ -75,7 +75,7 @@ data_rows = [
 next_row = len(worksheet.get_all_values()) + 1
 
 # Batch update to avoid single quotes in Google Sheets
-cell_range = f"A{next_row}:F{next_row + len(data_rows) - 1}"
+cell_range = f"A{next_row}:G{next_row + len(data_rows) - 1}"
 worksheet.batch_update([{
     "range": cell_range,
     "values": data_rows
