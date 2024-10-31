@@ -19,7 +19,7 @@ categories = []
 
 # Parse date
 date_text = date_text.strip()
-date_parsed = datetime.strptime(date_text, '%d %B %Y %I:%M %p')
+date_parsed = datetime.strptime(date_text, '%Y-%m-%dT%H:%M:%S.%fZ')
 
 # Process email content
 idx = text.find("ProductQuantityPrice")
