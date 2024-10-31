@@ -19,7 +19,7 @@ categories = []
 
 # Parse date
 date_text = date_text.strip()
-date_parsed = datetime.strptime(date_text, '%a, %d %b %Y %H:%M:%S %z')
+date_parsed = datetime.strptime(date_text, '%d %B %Y %I:%M %p')
 
 # Process email content
 idx = text.find("ProductQuantityPrice")
@@ -66,7 +66,8 @@ worksheet = spreadsheet.worksheet("Data")
 
 # Prepare data to insert into Google Sheets
 data_rows = [
-    [output['product_names'][i], output['categories'][i], output['quantities'][i], output['prices'][i], output['date_ddmmyyyy'], output['month_year']]
+    [output['product_names'][i], output['categories'][i], output['quantities'][i], output['prices'][i], 
+     output['date_ddmmyyyy'], output['time_hhmmss'], output['month_year']]
     for i in range(len(output['product_names']))
 ]
 
