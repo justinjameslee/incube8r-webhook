@@ -1,4 +1,4 @@
-name: Process incube8r sales data and insert into google sheets
+name: Process incube8r sales data and insert into Google Sheets
 
 on:
   workflow_dispatch:  # Allows manual triggering for testing
@@ -10,30 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Check out the code
       - name: Check out code
         uses: actions/checkout@v2
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           pip install gspread google-auth google-auth-oauthlib google-auth-httplib2
 
+      # Step 4: Set up Google Service Account JSON
       - name: Set up Google Service Account JSON
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: |
-          echo "$SERVICE_ACCOUNT_JSON" > service_account.json
+          # Save the service account JSON key to a file
+          echo "$SERVICE_ACCOUNT_JSON" | tr -d '\\' > service_account.json
 
+      # Step 5: Run Python script to process email data
       - name: Run Python script to process email data
         env:
           ORDER_DATA: ${{ github.event.client_payload.orderData }}
           DATE_DATA: ${{ github.event.client_payload.dateData }}
-          INPUT_DATA: ${{ github.event.client_payload.inputData }}         
-          
+          INPUT_DATA: '${{ toJSON(github.event.client_payload.inputData) }}'
+
           # ORDER_DATA: ${{ secrets.ORDER_DATA }}
           # DATE_DATA: ${{ secrets.DATE_DATA }}
           # INPUT_DATA: ${{ secrets.INPUT_DATA }}

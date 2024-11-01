@@ -1,5 +1,6 @@
 import os
 import re
+import json
 from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
@@ -16,7 +17,7 @@ worksheet = spreadsheet.worksheet("Data")
 # Get input data from environment variables
 order_text = os.getenv("ORDER_DATA", "")
 date_text = os.getenv("DATE_DATA", "")
-input_text = os.getenv("INPUT_DATA", "")
+input_text = json.loads(os.getenv("INPUT_DATA", "")) 
 
 # Debug
 print(order_text)
