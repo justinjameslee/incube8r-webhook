@@ -57,8 +57,8 @@ for sale_details in input_text:
 # Prepare data for batch update
 # Remove artist name; to be added back in later if needed
 data_rows = [
-    [output['order_num'][i], output['product_names'][i], output['quantities'][i], output['prices'][i], 
-     output['categories'][i], output['date_ddmmyyyy'][i], output['time_hhmmss'][i], output['month_year'][i]]
+    [output['order_num'][i], output['product_names'][i], output['categories'][i], output['quantities'][i], output['prices'][i], 
+     output['date_ddmmyyyy'][i], output['time_hhmmss'][i], output['month_year'][i]]
     for i in range(len(output['product_names']))
 ]
 
