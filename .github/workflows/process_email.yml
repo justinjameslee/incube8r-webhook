@@ -31,7 +31,7 @@ jobs:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: |
           # Save the service account JSON key to a file
-          echo "$SERVICE_ACCOUNT_JSON" | tr -d '\\' > service_account.json
+          echo "$SERVICE_ACCOUNT_JSON" > service_account.json
 
       # Step 5: Run Python script to process email data
       - name: Run Python script to process email data
