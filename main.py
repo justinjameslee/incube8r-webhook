@@ -1,9 +1,12 @@
 import os
 import re
 import json
+import time
+import random
 from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
+from googleapiclient.errors import HttpError
 
 # Setup Google Sheets access
 service_account_file = os.getenv("SERVICE_ACCOUNT_FILE")
@@ -21,9 +24,9 @@ input_text = json.loads(os.getenv("INPUT_DATA", ""))
 attachments_version = os.getenv("ATTACHMENTS", "false").lower() == "true"
 
 # Debug
-print(order_text)
-print(date_text)
-print(input_text)
+print("Order Text:", order_text)
+print("Date Text:", date_text)
+print("Input Text:", input_text)
 
 # Initialize output dictionary
 output = {
@@ -62,14 +65,41 @@ data_rows = [
     for i in range(len(output['product_names']))
 ]
 
+def read_sheet_with_retry(worksheet, range_name, retries=5):
+    for attempt in range(retries):
+        try:
+            data = worksheet.get(range_name)
+            return data
+        except HttpError as e:
+            if e.resp.status == 429:
+                print("Quota exceeded. Retrying in a few seconds...")
+                time.sleep(random.randint(30, 90))  # Wait before retrying
+            else:
+                raise  # Re-raise other exceptions
+    raise Exception("Failed to read from Google Sheets after multiple retries. Order num: {data_rows['order_num'][0]}")
+
+def batch_update_with_retry(worksheet, cell_range, data_rows, retries=5):
+    for attempt in range(retries):
+        try:
+            worksheet.batch_update([{
+                "range": cell_range,
+                "values": data_rows
+            }], value_input_option="USER_ENTERED")
+            print("Data inserted into Google Sheets successfully!")
+            return
+        except HttpError as e:
+            if e.resp.status == 429:
+                print("Quota exceeded. Retrying in a few seconds...")
+                time.sleep(random.randint(30, 90))  # Wait before retrying
+            else:
+                raise  # Re-raise other exceptions
+    raise Exception(f"Failed to write to Google Sheets after multiple retries. Order num: {data_rows['order_num'][0]}")
+
 # Find the next available row
-next_row = len(worksheet.get_all_values()) + 1
+next_row = len(read_sheet_with_retry(worksheet, "A:A")) + 1  # Adjusted for retry mechanism
 
-# Batch update to Google Sheets
+# Define the cell range for batch update
 cell_range = f"A{next_row}:G{next_row + len(data_rows) - 1}"
-worksheet.batch_update([{
-    "range": cell_range,
-    "values": data_rows
-}], value_input_option="USER_ENTERED")
 
-print("Data inserted into Google Sheets successfully!")
+# Perform the batch update with retry logic
+batch_update_with_retry(worksheet, cell_range, data_rows)
