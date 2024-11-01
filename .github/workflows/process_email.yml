@@ -30,10 +30,14 @@ jobs:
 
       - name: Run Python script to process email data
         env:
-          INPUT_DATA: ${{ github.event.client_payload.inputData }}          
+          ORDER_DATA: ${{ github.event.client_payload.orderData }}
           DATE_DATA: ${{ github.event.client_payload.dateData }}
-          # INPUT_DATA: ${{ secrets.INPUT_DATA }}
+          INPUT_DATA: ${{ github.event.client_payload.inputData }}         
+          
+          # ORDER_DATA: ${{ secrets.ORDER_DATA }}
           # DATE_DATA: ${{ secrets.DATE_DATA }}
+          # INPUT_DATA: ${{ secrets.INPUT_DATA }}
+
           SERVICE_ACCOUNT_FILE: "./service_account.json"
           GOOGLE_SHEET_NAME: ${{ secrets.GOOGLE_SHEET_NAME }}
         run: |

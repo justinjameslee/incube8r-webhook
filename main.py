@@ -20,8 +20,8 @@ input_text = os.getenv("INPUT_DATA", "")
 
 # Debug
 print(order_text)
-print(input_text)
 print(date_text)
+print(input_text)
 
 # Initialize output dictionary
 output = {
