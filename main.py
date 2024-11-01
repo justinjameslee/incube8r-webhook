@@ -32,8 +32,7 @@ output = {
     "quantities": [],
     "prices": [],
     "categories": [],
-    "date_ddmmyyyy": [],
-    "time_hhmmss": [],
+    "date_time": [],
     "month_year": []
 }
 
@@ -50,15 +49,14 @@ for sale_details in input_text:
     output["quantities"].append(sale_details['quantity'])
     output["prices"].append(re.sub(r'[^\d.]', '', sale_details["price"]))
     output["categories"].append('=IFERROR(VLOOKUP(INDIRECT("B"&ROW()), Categories!A:B, 2, FALSE), "Other")')
-    output["date_ddmmyyyy"].append(date_parsed.strftime('%d/%m/%Y'))
-    output["time_hhmmss"].append(date_parsed.strftime('%H:%M:%S'))
+    output["date_time"].append(date_parsed.strftime('%d/%m/%Y %H:%M:%S'))
     output["month_year"].append(date_parsed.strftime('%m/%Y'))
 
 # Prepare data for batch update
 # Remove artist name; to be added back in later if needed
 data_rows = [
     [output['order_num'][i], output['product_names'][i], output['categories'][i], output['quantities'][i], output['prices'][i], 
-     output['date_ddmmyyyy'][i], output['time_hhmmss'][i], output['month_year'][i]]
+     output['date_time'][i], output['month_year'][i]]
     for i in range(len(output['product_names']))
 ]
 
@@ -66,7 +64,7 @@ data_rows = [
 next_row = len(worksheet.get_all_values()) + 1
 
 # Batch update to Google Sheets
-cell_range = f"A{next_row}:H{next_row + len(data_rows) - 1}"
+cell_range = f"A{next_row}:G{next_row + len(data_rows) - 1}"
 worksheet.batch_update([{
     "range": cell_range,
     "values": data_rows
