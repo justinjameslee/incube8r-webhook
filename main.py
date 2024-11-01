@@ -10,6 +10,9 @@ date_text = os.getenv("DATE_DATA", "")
 google_sheet_name = os.getenv("GOOGLE_SHEET_NAME")  # Name of your Google Sheet
 service_account_file = os.getenv("SERVICE_ACCOUNT_FILE")  # Path to Google service account JSON file
 
+print(text)
+print(date_text)
+
 # Initialize variables for processing
 output = {
     'product_names': [],
