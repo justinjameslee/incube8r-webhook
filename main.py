@@ -17,7 +17,8 @@ worksheet = spreadsheet.worksheet("Data")
 # Get input data from environment variables
 order_text = os.getenv("ORDER_DATA", "")
 date_text = os.getenv("DATE_DATA", "")
-input_text = json.loads(os.getenv("INPUT_DATA", "")) 
+input_text = json.loads(os.getenv("INPUT_DATA", ""))
+attachments_version = os.getenv("ATTACHMENTS", "false").lower() == "true"
 
 # Debug
 print(order_text)
@@ -37,7 +38,8 @@ output = {
 }
 
 # Parse the date in the given format
-date_parsed = datetime.strptime(date_text.strip(), '%Y-%m-%dT%H:%M:%S.%fZ')
+date_parsed = datetime.strptime(date_text.strip(), '%a, %d %b %Y %H:%M:%S %z') \
+    if attachments_version else datetime.strptime(date_text.strip(), '%Y-%m-%dT%H:%M:%S.%fZ')
 
 for sale_details in input_text:
     product_artist = re.search(r"^(.*?)\s+by\s+([^\(]+)", sale_details['product'])

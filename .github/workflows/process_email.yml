@@ -39,6 +39,7 @@ jobs:
           ORDER_DATA: ${{ github.event.client_payload.orderData }}
           DATE_DATA: ${{ github.event.client_payload.dateData }}
           INPUT_DATA: '${{ toJSON(github.event.client_payload.inputData) }}'
+          ATTACHMENTS: ${{ github.event.client_payload.attachmentsBool }}
 
           # ORDER_DATA: ${{ secrets.ORDER_DATA }}
           # DATE_DATA: ${{ secrets.DATE_DATA }}
